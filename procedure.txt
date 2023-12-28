@@ -1,0 +1,21 @@
+probablity_pixel=numpix/totalnum
+numpix-> number of occurance of a pixel with certain intensity value
+
+totalnum number of pixels in the input image
+
+for ex: 1if 100 pixels -> 100 huffman code words 
+-----------
+pixel valuses int the input image will be leaf nodes 
+
+steps 
+1> building huffman tree
+2>  a> combine the two lowest probablity leaf nodes into single new node 
+    b> Replaceing rhe two nodes by new one and sorting the nodes according to new probablityvalues
+    b> continure till we get single node with prob 1,0 --> as  root node
+3>backtrack from the root, assigning 0 or 1 to each intermediate node, till we reach leaf nodes
+0 to the left and 1 to the right 
+
+//1//read the image into a 2d array
+
+
+ 
