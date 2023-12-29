@@ -16,6 +16,18 @@ steps
 0 to the left and 1 to the right 
 
 //1//read the image into a 2d array
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+step 1>>>>
+
+
+
+
+step 2 >>> 
+defining struct which will contain the pixel intensityvalues
+
+
+
+
 
 
  
