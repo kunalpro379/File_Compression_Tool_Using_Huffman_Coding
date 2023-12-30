@@ -6,6 +6,11 @@
 
 #include "HuffCodeStructure.hpp"
 using namespace std;
+
+int nodeNo;
+int maxcodelen;
+int width,height;
+clock_t start,end;
 int fib(int n) {
     if (n <= 1)
         return n;
@@ -14,22 +19,22 @@ int fib(int n) {
 class ReadBMP{
     public:
 int i,j;
-
+clock_t start,end;
 int data=0,hbytes;
 int offset;
 int bpp=0;
-int width,height;
+
 long bmpsize=0, bmpdataoff=0;
 int **imageArr;
 int temp=0;
-clock_t start,end;
+
 double time_taken;
 int hist[256];
-int nodeNo;
+
 //reading BMP file
 FILE* image_file;
 
-
+public:
 void ReadBmp(){
     // 23Dec 23
 char InputFile[]="input.bmp"; 

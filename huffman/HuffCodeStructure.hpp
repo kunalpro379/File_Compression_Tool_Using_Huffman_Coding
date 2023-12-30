@@ -20,9 +20,11 @@ struct pixfreq {
 
 struct huffcode {
     char code[maxcodelen];
-    int pix,arr;
+    int pix,arrlocation;
     int freq;
 };
+struct huffcode TempHuff;
+
 struct tree {
 int pix;
 int LeftArr, RightArr;
@@ -57,20 +59,65 @@ pix_freq=(struct pixfreq*)malloc(sizeof(struct pixfreq)*TotalPixels);
 huffman_tree=(struct tree*)malloc(sizeof(struct tree)*TotalNodes);
 huff_code=(struct hufcode*)malloc(sizeof(struct huffcode)*nodeNo);
 
+//initializing pix-freq and hufff_code
+//info about leaf nodes
+float TempFrqProbablity;
 
-//creating pix_freq array
-float TempFrq;
 for(int i=0;i<256;i++){
 if(hist[i]!=0)
 {
+    //pixel intensityr vals
+    huff_code[j].pix=i;
+    pix_freq[j].pix=i;
+    //frequency
+
+
+    huffman_tree[j].pix=i;
+    huffman_tree[j].LeftArr=-1;
+    huffman_tree[j].RightArr=-1;
+
+    huff_code[j].arrlocation=j;
+
+    TempFrqProbablity=(float)hist[i]/TotalPixels; //----> probablity of occurrance of for  the frequencey of pixels at some intensity that is historgram by dividing total number of pixels in the image 
+    pix_freq[j].freq=TempFrqProbablity;
+    huff_code[j].freq=TempFrqProbablity;
+    huffman_tree[j].freq=TempFrqProbablity;
     
-}
+    pix_freq[j].left=NULL:
+    pix_freq[j].right=NULL;
+
+    pix_freq[j].code[0]='\0';
+    huffman_tree[j].code[j]='\0';
+    j++;
 
 
 
 }
 
+//sorting the histogram is done in sorting work 
 
+void sortHuffCode(){
+        for(int i=0;i<nodeNo;i++){
+            for(int j=i+1;j<nodeNo;j++){
+                if(huff_code[i].freq<huff_code[j].freq){
+                    TempHuff=huff_code[i];
+                    huff_code[i]=huff_code[j];
+                    huff_code[j]=TempHuff;
+                }
+            }
+        }
+    }
+
+//now huffman tree is builded in hufmantree.hpp
+
+
+}
 
 };
+
+
+
+
+
+
 #endif
