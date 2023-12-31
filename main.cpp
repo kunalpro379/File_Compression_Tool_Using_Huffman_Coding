@@ -6,6 +6,7 @@
 using namespace std;
 float p=1.0;
 
+
 struct pixfreq {
     int pix,LeftArrLoc,RightArrLoc;
     float freq;
@@ -221,12 +222,14 @@ std::cout << "\nPress any key to continue.." << std::endl;
                 hist[imageArr[i][j]] += 1;
 
         cout << "Histogram" << endl << endl;
-
+nodeNo=0;
         for ( i = 0; i < 256; i++) {
             if (hist[i] != 0)
-                nodeNo += 1;
+                nodeNo =nodeNo+1;
+                
         }
-
+       
+cout<<"NodeNo: : : "<<nodeNo<<endl;
         // Print the histogram
         for ( i = 0; i < 256; i++) {
             if (hist[i] != 0) {
@@ -301,42 +304,80 @@ struct tree* huffman_tree;
 //so
 int TostalNodes= 2*nodeNo-1;
 int TotalPixels=height*width;
-pix_freq=(struct pixfreq*)malloc(sizeof(struct pixfreq)*TotalPixels);
-huffman_tree=(struct tree*)malloc(sizeof(struct tree)*TostalNodes);
-huff_code=(struct huffcode*)malloc(sizeof(struct huffcode)*nodeNo);
+
+
+
+// facing error of memory allocation 
+// Allocate memory for pix_freq
+pix_freq = (struct pixfreq *)malloc(sizeof(struct pixfreq) * TostalNodes);
+if (pix_freq == NULL) {
+    fprintf(stderr, "Error: Unable to allocate memory for pix_freq. Requested size: %zu bytes\n", sizeof(struct pixfreq) *TostalNodes);
+    perror("malloc");
+    exit(EXIT_FAILURE);
+}
+
+
+huffman_tree = (struct tree *)malloc(sizeof(struct tree) * TostalNodes);
+if (huffman_tree == NULL) {
+    fprintf(stderr, "Error: Unable to allocate memory for huffman_tree. Requested size: %zu bytes\n", sizeof(struct tree) * TostalNodes);
+    perror("malloc");
+    free(pix_freq);  
+    exit(EXIT_FAILURE);
+}
+
+
+
+
+huff_code = (struct huffcode *)malloc(sizeof(struct huffcode) * nodeNo);
+if (huff_code == NULL) {
+    fprintf(stderr, "Error: Unable to allocate memory for huff_code.\n");
+    free(pix_freq);       
+    free(huffman_tree);   
+    exit(EXIT_FAILURE);   
+}
+cout<<"Hello";
+cout<<"Hello";
 
 //initializing pix-freq and hufff_code//////////////////////////////////////////
-
+    // for (int i = 0; i < TostalNodes; i++) {
+    //     pix_freq[i].code.clear(); // Clear any existing content
+    //     //pix_freq[i].code[0] = '\0';  
+    // }
 //info about leaf nodes
- float TempFrqProbablity;
-    for (int i = 0; i < 242; i++) {
-        if (hist[i] != 0) {
-            // Pixel intensity values
-            huff_code[j].pix = i;
-            pix_freq[j].pix = i;
-            huffman_tree[j].pix = i;
-            huffman_tree[j].LeftArrLoc = -1;
-            huffman_tree[j].RightArrLoc = -1;
+float TempFrqProbablity;
+ j = 0;  // Move the initialization outside the loop
 
-            huff_code[j].arrlocation = j;
+for (int i = 0; i < 256; i++) {
+    if (hist[i] != 0) {
+        huff_code[j].pix = i;
+        pix_freq[j].pix = i;
+        huffman_tree[j].pix = i;
+        huffman_tree[j].LeftArrLoc = -1;
+        huffman_tree[j].RightArrLoc = -1;
 
-            // Probability of occurrence
-            TempFrqProbablity = static_cast<float>(hist[i]) / TotalPixels;
-            pix_freq[j].freq = TempFrqProbablity;
-            huff_code[j].freq = TempFrqProbablity;
-            huffman_tree[j].freq = TempFrqProbablity;
+        huff_code[j].arrlocation = j;
 
-            pix_freq[j].left = NULL;
-            pix_freq[j].right = NULL;
+        // Probability of occurrence
+        TempFrqProbablity = (float)(hist[i]) / TotalPixels;
+        pix_freq[j].freq = TempFrqProbablity;
+        huff_code[j].freq = TempFrqProbablity;
+        huffman_tree[j].freq = TempFrqProbablity;
 
-            pix_freq[j].code.clear();  // Clear the vector before using it
-            huffman_tree[j].code.clear();  // Clear the vector before using it
+        pix_freq[j].left = NULL;
+        pix_freq[j].right = NULL;
 
-            j++;
-        }
+        // pix_freq[j].code[0] = "\0";
+        // huffman_tree[j].code[0]="\0";
+//         pix_freq[j].code = {'\0'};      
+// huffman_tree[j].code = {'\0'};  
+
+
+        j++;  // Increment j here
     }
-//sorting the histogram  /////////////////////////////////////////// 
+}
 
+//sorting the histogram  /////////////////////////////////////////// 
+cout<<"CHeakmark";
         struct huffcode TempHuff;
         for (int i = 0; i < nodeNo; i++) {
             for (int j = i + 1; j < nodeNo; j++) {
@@ -351,18 +392,17 @@ huff_code=(struct huffcode*)malloc(sizeof(struct huffcode)*nodeNo);
     float SumProb;
     int SumPix;
     int n = 0, k = 0, l = 0;
-    int nextnode = nodeNo; 
- cout<<endl<<nodeNo<<endl<<endl;
+
+
+   cout<<"CHeakmark";
  int nxtnode=nodeNo;
 
-//new position of combined node
 
- while(n<nodeNo-1){
-cout<<endl<<endl<<huff_code[i].pix<<endl<<huff_code[i].freq<<endl;
+ while(n<nxtnode-1){
 
 //adding the lowest two probablities st the end (Heap array)
-SumPix=huff_code[nodeNo-n-1].freq+huff_code[nodeNo-n-2].freq;
-SumProb=huff_code[nodeNo-n-1].pix+huff_code[nodeNo-n-2].pix;
+SumPix=huff_code[nodeNo-n-1].pix+huff_code[nodeNo-n-2].pix;
+SumProb=huff_code[nodeNo-n-1].freq+huff_code[nodeNo-n-2].freq;
 
 //finding new position  combined node
 while(SumProb<=huff_code[i].freq){
@@ -374,40 +414,41 @@ i++;
 
 //creating new node in pix_freq and huffman_tree arrays  for combinned node
 //here shown by sumpix and sumprob 
-pix_freq[nextnode].pix=SumPix;
-pix_freq[nextnode].freq=SumProb;
+pix_freq[nxtnode].pix = SumPix;
+huffman_tree[nxtnode].pix = SumPix;
+pix_freq[nxtnode].freq = SumProb;
+huffman_tree[nxtnode].freq = SumProb;
 
-huffman_tree[nextnode].pix=SumPix;
-huffman_tree[nextnode].freq=SumProb;
 //at  the new position of combined node 
 
 
 
 //as i know,  huff_code[j].arrlocation=j; 
-pix_freq[nextnode].left=&pix_freq[huff_code[nodeNo-n-2].arrlocation];
+pix_freq[nxtnode].left=&pix_freq[huff_code[nodeNo-n-2].arrlocation];
 //pix_freq[nextnode].left assigning the address of node with (nodeNo-n-2)th frequenc 
 //connecting SumPix with their left and right child and same with sumprob
-pix_freq[nextnode].right=&pix_freq[huff_code[nodeNo-n-1].arrlocation];
+pix_freq[nxtnode].right=&pix_freq[huff_code[nodeNo-n-1].arrlocation];
 //pix_freq[nextnode].left assigning the address of node with (nodeNo-n-1)th frequenc y
 
-huffman_tree[nextnode].LeftArrLoc=huff_code[nodeNo-n-2].arrlocation;
+huffman_tree[nxtnode].LeftArrLoc=huff_code[nodeNo-n-2].arrlocation;
 //huffman_tree[nextnode].LeftArr is assigned the array index of node with (nodeNo-n-2)th freq
-huffman_tree[nextnode].RightArrLoc=huff_code[nodeNo-1-n].arrlocation;
+huffman_tree[nxtnode].RightArrLoc=huff_code[nodeNo-1-n].arrlocation;
 //  
 
+cout<<"sumpix ->"<<SumPix<<"------"<<"sumprob ->"<<SumProb<<endl;
+pix_freq[nxtnode].code.push_back('0');
+huffman_tree[nxtnode].code.push_back('0');
 
-pix_freq[nodeNo].code[0]='\0';
-huffman_tree[nodeNo].code[0]='\0';
 
 
 //sorting the new array
 //updating 
-for(k=nodeNo;k>=0;k--){
+for(k=nodeNo-1;k>0;k--){
     if(k==i){
 
             huff_code[k].pix=SumPix;
             huff_code[k].freq=SumProb;
-            huff_code[k].arrlocation=nextnode;
+            huff_code[k].arrlocation=nxtnode;
 
     }
     else if(k>i){
@@ -418,41 +459,43 @@ huff_code[k]=huff_code[k-1];
 
 }
 n+=1;
-nextnode+=1;
-end=clock();
+nxtnode+=1;
+
+ }
 
 
-start=clock();
-
+cout<<":"<<"Assigining Code through Backtracking..."<<endl;
+    
+    
 //now assigining code 
-char Left='0';
-char Right='0';
+char left='0';
+char right='1';
 int Index;
 //starting from root we assign 0 and 1 to the children and newly formed node will be appended to the arr pix_freq
 //root is last eleme nt of arr at index totalNodes-1
 //starting from last index iterate over arr and  assigninng 0 or 1 till we reach parent node
 //num of steps =totalnodes-nodno-1
-/*
+
 for (i = TostalNodes - 1; i > nodeNo; i--)
 {
     // nodeNo represents the number of leaf nodes, so we iterate only for internal nodes
 
     if (pix_freq[i].left != NULL)
     {
-        strconcat(pix_freq[i].left->code, pix_freq[i].code, '0');
+        strconcat(pix_freq[i].left->code, pix_freq[i].code, left);
         //strconcat(huffman_tree[huffman_tree[i].LeftArrLoc].code, huffman_tree[i].code, '0');
     }
 
     if (pix_freq[i].right != NULL)
     {
-        strconcat(pix_freq[i].right->code, pix_freq[i].code, '1');
+        strconcat(pix_freq[i].right->code, pix_freq[i].code, right);
         //strconcat(huffman_tree[huffman_tree[i].RightArrLoc].code, huffman_tree[i].code, '1');
     }
 } 
-*/
-char left = '0';
-char right = '1';
-int index;
+cout<<":"<<"Chaeaking..."<<endl;
+
+        
+        
 
 for (i = TostalNodes - 1; i >= nodeNo; i--) {
     if (pix_freq[i].left != NULL) {
@@ -462,7 +505,7 @@ for (i = TostalNodes - 1; i >= nodeNo; i--) {
         strconcat(pix_freq[i].right->code, pix_freq[i].code, right);
     }
 }
-
+cout<<":"<<"Chaeaking..."<<endl;
 // Assuming p is a null-terminated string
 const char* p = "R";
 // Last node is root
@@ -471,6 +514,7 @@ strconcat(pix_freq[TostalNodes - 1].code, vector<char>(p, p + std::strlen(p)), '
 end = clock();
 time_taken = ((double)(end - start)) / CLOCKS_PER_SEC;
 cout << "time_taken::::" << time_taken << endl;
+
 
 // Printing huffcodes
 cout << "printing huffman code:::::::" << endl;
@@ -487,4 +531,5 @@ for(i=0;i<nodeNo;i++)
 
     
 
- }}
+ 
+ }
