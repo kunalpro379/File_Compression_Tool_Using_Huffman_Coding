@@ -1,0 +1,40 @@
+import tkinter as tk
+from tkinter import filedialog
+#from huffman_compression import huffman_compress  # Assuming you have a huffman compression function
+
+class HuffmanGUI:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Huffman Compression Tool")
+
+        self.file_path_label = tk.Label(root, text="Selected File: ")
+        self.file_path_label.pack()
+
+        self.choose_file_button = tk.Button(root, text="Choose File", command=self.choose_file)
+        self.choose_file_button.pack()
+
+        self.compress_button = tk.Button(root, text="Compress", command=self.compress_file)
+        self.compress_button.pack()
+
+        self.status_label = tk.Label(root, text="")
+        self.status_label.pack()
+
+    def choose_file(self):
+        file_path = filedialog.askopenfilename(title="Choose a file")
+        if file_path:
+            self.file_path_label.config(text="Selected File: " + file_path)
+        else:
+            self.file_path_label.config(text="No file selected")
+
+    def compress_file(self):
+        file_path = self.file_path_label.cget("text")[14:]  # Extract the file path
+        if file_path and file_path != "No file selected":
+            compressed_file_path = huffman_compress(file_path)
+            self.status_label.config(text="Compression complete. Compressed file saved at: " + compressed_file_path)
+        else:
+            self.status_label.config(text="No file selected.")
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = HuffmanGUI(root)
+    root.mainloop()
